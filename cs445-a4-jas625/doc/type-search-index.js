@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"cs445.a4","l":"NoSuchSongException"},{"p":"cs445.a4","l":"NoSuchStationException"},{"p":"cs445.a4","l":"NoSuchUserException"},{"p":"cs445.a4","l":"Song"},{"p":"cs445.a4","l":"Station"},{"p":"cs445.a4","l":"StreamingRadio"},{"p":"cs445.a4","l":"User"}]
