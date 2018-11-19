@@ -498,13 +498,17 @@ public class Sudoku {
                 System.out.println("Could not find file!");
                 return;
             }
+            System.out.println("Input board:");
             printBoard(board);
+            long start = System.nanoTime();
             int[][] solution = solve(board);
+            double total = (System.nanoTime() - start) / 1e9;
+            System.out.println("solve() took " + total + "(s) to run.");
             if (solution == null) {
                 System.out.println("No solution to this board!");
             } else {
                 System.out.println("Solution:\n");
-                printBoard(solve(board));
+                printBoard(solution);
             }
         }
     }

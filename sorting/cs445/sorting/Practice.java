@@ -2,7 +2,7 @@ package cs445.sorting;
 
 import java.lang.Math;
 
-public class Sorting {
+public class Practice {
 
   /** 
    * Selection sort iterates n-1 times, first starting at 0, finding the
@@ -12,7 +12,7 @@ public class Sorting {
    * worst case of O(n^2) 
   */
   public static <T extends Comparable<? super T>> void selectionSort(T[] a) {
-    for (int i = 0; i < a.length - 1; i++) {
+    for (int i = 0; i < a.length - 1; i++ ) {
       int smallest = i;
       for (int j = i + 1; j < a.length; j++) {
         if (a[j].compareTo(a[smallest]) < 0) {
@@ -24,11 +24,26 @@ public class Sorting {
   }
 
   public static <T extends Comparable<? super T>> void bubbleSort(T[] a) {
-
+    for (int i = a.length - 1; i > 0; i--) {
+      for (int j = 0; j < i; j++) {
+        if (a[j].compareTo(a[j+1]) > 0) {
+          swap(a, j, j+1);
+        }
+      }
+    }
   }
 
   public static <T extends Comparable<? super T>> void betterBubbleSort(T[] a) {
-
+    boolean swapped = true;
+    for (int i = a.length - 1; i > 0 && swapped; i--) {
+      for (int j = 0; j < i && sorted; j++) {
+        swapped = false;
+        if (a[j].compareTo(a[j+1]) > 0) {
+          swap(a, j, j+1);
+          swapped = true;
+        }
+      }
+    }
   }
 
   /**
@@ -76,23 +91,17 @@ public class Sorting {
    * Insertion sort has an interesting property where if a number can be 
    * guarunteed to be less than some distance away from its sorted position, 
    * then insertion sort has an O(n) runtime. Shell sort takes advantage of this
-   * and provides a runtime less than O(n^2) and greater than O(n).
+   * and provides a runtime less than O(n^2) and greater than O(nlogn).
    * 
    * @param a The array to sort
    */
   public static <T extends Comparable<? super T>> void shellSort(T[] a) {
-    int gap = (int) (a.length / 2.2);
-    if (gap <= 1) {
-      gap = 1;
-    }
+    int gap = a.length / 2;
     while (gap > 0) {
       for (int i = 0; i < gap; i++) {
         insertionSort(a, gap, i);
       }
-      gap = (int)(gap / 2.2);
-      if (gap < 1) {
-        insertionSort(a, 1, 0);
-      }
+      gap = gap / 2.2;
     }
     
   }
@@ -103,7 +112,7 @@ public class Sorting {
   }
 
   public static <T extends Comparable<? super T>> void mergeSort(T[] a, T[] aux,  int start, int end) {
-    if (end - start > 1) {
+    if (start < end) {
       int mid = (start + end) / 2;
       mergeSort(a, aux, start, mid);
       mergeSort(a, aux, mid, end);
@@ -114,67 +123,37 @@ public class Sorting {
   public static <T extends Comparable<? super T>> void merge(T[] a, T[] aux,      int start, int mid, int end) {
     int leftIndex = start;
     int rightIndex = mid;
-    int auxIndex = start;
+    int index = start;
 
     while (leftIndex < mid && rightIndex < end) {
       if (a[leftIndex].compareTo(a[rightIndex]) < 0) {
-        aux[auxIndex] = a[leftIndex];
+        aux[index] = a[leftIndex];
         leftIndex++;
       } else {
-        aux[auxIndex] = a[rightIndex];
+        aux[index] = a[rightIndex];
         rightIndex++;
       }
-      auxIndex++;
+      index++;
     }
 
     while (leftIndex < mid) {
-      aux[auxIndex] = a[leftIndex];
+      aux[index] = a[leftIndex];
       leftIndex++;
-      auxIndex++;
+      index++;
     }
 
     while (rightIndex < end) {
-      aux[auxIndex] = a[rightIndex];
+      aux[index] = a[rightIndex];
       rightIndex++;
-      auxIndex++;
+      index++;
     }
 
     for (int i = start; i < end; i++) {
       a[i] = aux[i];
     }
+
   }
 
-  public static <T extends Comparable<? super T>> void quickSort(T[] a) {
-    quickSort(a, 0, a.length);
-  }
-
-  public static <T extends Comparable<? super T>> void quickSort(T[] a, int       start, int end) {
-    if (start == end) {
-      return;
-    } else {
-      T pivot = a[end - 1];
-      int lo = start;
-      int hi = end - 2;
-      while (hi > lo) {
-        while (lo < end - 1 && a[lo].compareTo(pivot) < 0) {
-          lo++;
-        } 
-        while (hi >= start && a[hi].compareTo(pivot) > 0) {
-          hi--;
-        }
-        if (hi > lo) {
-          swap(a, hi, lo);
-        }
-        print(a, 10);
-      }
-      if (a[lo].compareTo(pivot) > 0) {
-        swap(a, lo, end - 1);
-      }
-      quickSort(a, start, lo);
-      quickSort(a, lo + 1, end);
-    }
-  
-  }
 
 
   /**
@@ -237,21 +216,13 @@ public class Sorting {
     Integer[] b = generateArray(arraySize, -200000, 200000);
     Integer[] c = generateArray(arraySize, -200000, 200000);
     Integer[] d = generateArray(arraySize, 0, 200);
-    Integer[] e = generateArray(arraySize, 0, 200);
-
     System.out.println("Generated arrays!");
 
-    print(e, 10);
+    print(d, 10);
     long start = System.nanoTime();
-    quickSort(e);
-    long end = System.nanoTime() - start;
-    print(e, 10);
-
-    System.out.println("Quick sort took " + end / 1e9 + "(s)");
-
-    start = System.nanoTime();
     mergeSort(d);
-    end = System.nanoTime() - start;
+    long end = System.nanoTime() - start;
+    print(d, 10);
 
     System.out.println("Merge sort took " + end / 1e9 + "(s)");
     start = System.nanoTime();
