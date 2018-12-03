@@ -2,148 +2,194 @@ package cs445.a5;
 
 import java.util.Iterator;
 
-public class TernaryTree<E> implements TernaryTreeInterface<E>,
-        TreeIteratorInterface<E> {
-    TernaryNode<E> root;
+public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInterface<E> {
+  TernaryNode<E> root;
 
-    /**
-     * Creates an empty ternary tree
-     */
-    public TernaryTree() {
-        root = null;
+  /**
+   * Creates an empty ternary tree
+   */
+  public TernaryTree() {
+    root = null;
+
+  }
+
+  /**
+   * Creates a ternary tree with one node - the root
+   * 
+   * @param data The data for the root node. Can be null.
+   */
+  public TernaryTree(E data) {
+    root = new TernaryNode<>(data);
+  }
+
+  /**
+   * Creates a ternary tree with a root node with E data, and three children of ternary trees.
+   *
+   * @param data       The data for the root node
+   * @param leftTree   The left tree to add
+   * @param middleTree The middle tree to add
+   * @param rightTree  The right tree to add
+   */
+  public TernaryTree(E data, TernaryTree<E> leftTree, TernaryTree<E> middleTree,
+      TernaryTree<E> rightTree) {
+    initTree(data, leftTree, middleTree, rightTree);
+  }
+
+  /**
+   * Sets this tree to a new tree with one node with the input data
+   *
+   * @param rootData The data for the new tree's root node
+   */
+  @Override
+  public void setTree(E rootData) {
+    root = new TernaryNode<>(rootData);
+  }
+
+  /**
+   * Sets this tree to a new a ternary tree with a root node with E data, and three children of
+   * ternary trees.
+   *
+   * @param rootData   The data for the root node
+   * @param leftTree   The left tree to add
+   * @param middleTree The middle tree to add
+   * @param rightTree  The right tree to add
+   */
+  @Override
+  public void setTree(E rootData, TernaryTreeInterface<E> leftTree,
+      TernaryTreeInterface<E> middleTree, TernaryTreeInterface<E> rightTree) {
+    initTree(rootData, (TernaryTree<E>) leftTree, (TernaryTree<E>) middleTree,
+        (TernaryTree<E>) rightTree);
+  }
+
+  /**
+   * Private method that deals with the nitty-gritty of setting this tree's children with new trees.
+   * It handles the case where two or three trees input are the same trees.
+   *
+   *
+   * @param data
+   * @param leftTree
+   * @param middleTree
+   * @param rightTree
+   */
+  private void initTree(E data, TernaryTree<E> leftTree, TernaryTree<E> middleTree,
+      TernaryTree<E> rightTree) {
+    TernaryNode<E> newRoot = new TernaryNode<>(data);
+
+    if (leftTree != null && !leftTree.isEmpty()) {
+      newRoot.setLeftChild(leftTree.root);
     }
 
-    /**
-     * Creates a ternary tree with one node - the root
-     * @param data The data for the root node. Can be null.
-     */
-    public TernaryTree(E data) {
-        root = new TernaryNode<>(data);
+    if (middleTree != null && !middleTree.isEmpty()) {
+      if (middleTree == leftTree) {
+        newRoot.setMiddleChild(leftTree.root.copy());
+      } else {
+        newRoot.setMiddleChild(middleTree.root);
+      }
     }
 
-    /**
-     * Creates a ternary tree with a root node with E data, and three
-     * children of ternary trees.
-     *
-     * @param data The data for the root node
-     * @param leftTree The left tree to add
-     * @param middleTree The middle tree to add
-     * @param rightTree The right tree to add
-     */
-    public TernaryTree(E data,
-                       TernaryTree<E> leftTree,
-                       TernaryTree<E> middleTree,
-                       TernaryTree<E> rightTree) {
-        initTree(data, leftTree, middleTree, rightTree);
+    if (rightTree != null && !rightTree.isEmpty()) {
+      if (rightTree == leftTree) {
+        newRoot.setRightChild(leftTree.root.copy());
+      } else if (rightTree == middleTree) {
+        newRoot.setRightChild(middleTree.root.copy());
+      } else {
+        newRoot.setRightChild(rightTree.root);
+      }
     }
 
-    /**
-     * Sets this tree to a new tree with one node with the input data
-     *
-     * @param rootData  The data for the new tree's root node
-     */
-    @Override
-    public void setTree(E rootData) {
-        root = new TernaryNode<>(rootData);
+    root = newRoot;
+
+    if (leftTree != null && leftTree != this) {
+      leftTree.clear();
     }
 
-    /**
-     * Sets this tree to a new a ternary tree with a root node with E data,
-     * and three children of ternary trees.
-     *
-     * @param rootData The data for the root node
-     * @param leftTree The left tree to add
-     * @param middleTree The middle tree to add
-     * @param rightTree The right tree to add
-     */
-    @Override
-    public void setTree(E rootData,
-                        TernaryTreeInterface<E> leftTree,
-                        TernaryTreeInterface<E> middleTree,
-                        TernaryTreeInterface<E> rightTree) {
-        initTree(rootData,
-                (TernaryTree<E>) leftTree,
-                (TernaryTree<E>) middleTree,
-                (TernaryTree<E>) rightTree);
+    if (middleTree != null && middleTree != this) {
+      middleTree.clear();
     }
 
-    /**
-     * Private method that deals with the nitty-gritty of setting this tree's
-     * children with new trees. It 
-     *
-     *
-     * @param data
-     * @param leftTree
-     * @param middleTree
-     * @param rightTree
-     */
-    private void initTree(E data,
-                          TernaryTree<E> leftTree,
-                          TernaryTree<E> middleTree,
-                          TernaryTree<E> rightTree) {
+    if (rightTree != null && rightTree != this) {
+      rightTree.clear();
+    }
+  }
 
+  @Override
+  public E getRootData() throws EmptyTreeException {
+    if (isEmpty()) {
+      throw new EmptyTreeException();
+    } else {
+      return root.getData();
+    }
+  }
+
+  @Override
+  public int getHeight() {
+    int height = 0;
+
+    if (!isEmpty()) {
+      height = root.getHeight();
     }
 
-    @Override
-    public E getRootData() throws EmptyTreeException {
-        if (isEmpty()){
-            throw new EmptyTreeException();
-        }  else {
-            return root.getData();
-        }
+    return height;
+  }
+
+  @Override
+  public int getNumberOfNodes() {
+    int numNodes = 0;
+
+    if (!isEmpty()) {
+      numNodes = root.getNumberOfNodes();
     }
 
-    @Override
-    public int getHeight() {
-        int height = 0;
+    return numNodes;
+  }
 
-        if (!isEmpty()) {
-            height = root.getHeight();
-        }
+  @Override
+  public boolean isEmpty() {
+    return root == null;
+  }
 
-        return height;
-    }
+  @Override
+  public void clear() {
+    root = null;
+  }
 
-    @Override
-    public int getNumberOfNodes() {
-        int numNodes = 0;
+  @Override
+  public Iterator<E> getPreorderIterator() {
+    return null;
+  }
 
-        if (!isEmpty()) { 
-            numNodes = root.getNumberOfNodes();
-        } 
-        
-        return numNodes;
-    }
+  @Override
+  public Iterator<E> getPostorderIterator() {
+    return null;
+  }
 
-    @Override
-    public boolean isEmpty() {
-        return root == null;
-    }
+  @Override
+  public Iterator<E> getInorderIterator() {
+    return null;
+  }
 
-    @Override
-    public void clear() {
-        root = null;
-    }
+  @Override
+  public Iterator<E> getLevelOrderIterator() {
+    return null;
+  }
 
-    @Override
-    public Iterator<E> getPreorderIterator() {
-        return null;
-    }
+  public static void main(String[] args) {
+    TernaryTree<String> mTree = new TernaryTree<>("Hello!");
+    TernaryTree<String> aTree = new TernaryTree<>("EYYYYY");
+    TernaryTree<String> bTree = new TernaryTree<>("BEEEEE", null, null, null);
+    TernaryTree<String> cTree = new TernaryTree<>("SEEEEE");
 
-    @Override
-    public Iterator<E> getPostorderIterator() {
-        return null;
-    }
+    mTree.setTree(mTree.getRootData(), aTree, bTree, cTree);
+    mTree.setTree(mTree.getRootData(), mTree, mTree, mTree);
 
-    @Override
-    public Iterator<E> getInorderIterator() {
-        return null;
-    }
+    System.out.println("aTree.isEmpty():" + aTree.isEmpty());
 
-    @Override
-    public Iterator<E> getLevelOrderIterator() {
-        return null;
-    }
+    System.out.println("My Tree's data: " + mTree.getRootData());
+    System.out.println("Left child's data: " + mTree.root.getRightChild().getLeftChild().getData());
+    System.out.println("Middle child's data: " + mTree.root.getLeftChild().getMiddleChild().getData());
+    System.out.println("Right child's data: " + mTree.root.getLeftChild().getRightChild().getData());
 
-
+    System.out.println("My Tree's number of nodes: " + mTree.getNumberOfNodes());
+    System.out.println("My Tree's height: " + mTree.getHeight());
+  }
 }

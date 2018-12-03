@@ -98,10 +98,28 @@ class TernaryNode<T> {
         int height = 0;
 
         if (node != null) {
-            height = 1 + Math.max(getHeight(children[0]),
-                    Math.max(getHeight(children[1]), getHeight(children[2])));
+            height = 1 + Math.max(getHeight(node.getLeftChild()),
+                    Math.max(getHeight(node.getMiddleChild()), getHeight(node.getRightChild())));
         }
 
         return height;
+    }
+
+    public TernaryNode<T> copy() {
+      TernaryNode<T> copy = new TernaryNode<T>(this.data);
+
+      if (children[0] != null) {
+        copy.setLeftChild(children[0].copy());
+      }
+
+      if (children[1] != null) {
+        copy.setMiddleChild(children[1].copy());
+      }
+
+      if (children[2] != null) {
+        copy.setRightChild(children[2].copy());
+      }
+      
+      return copy;
     }
 }

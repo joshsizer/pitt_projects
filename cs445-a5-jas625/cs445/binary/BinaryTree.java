@@ -139,7 +139,7 @@ public class BinaryTree<E> implements BinaryTreeInterface<E> {
 
         public E next() {
             BinaryNode<E> nextNode;
-
+            
             if (hasNext()) {
                 nextNode = nodeStack.pop();
                 BinaryNode<E> leftChild = nextNode.getLeftChild();
