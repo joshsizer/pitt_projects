@@ -1,6 +1,7 @@
 package cs445.a5;
 
 import cs445.StackAndQueuePackage.LinkedStack;
+import cs445.StackAndQueuePackage.LinkedQueue;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -241,7 +242,7 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
    */
   @Override
   public Iterator<E> getLevelOrderIterator() {
-    return null;
+    return new LevelOrderIterator();
   }
 
   private class PreorderIterator implements Iterator<E> {
@@ -411,6 +412,47 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
     }
   }
 
+  private class LevelOrderIterator implements Iterator<E> {
+    LinkedQueue<TernaryNode<E>> queue;
+
+    private LevelOrderIterator() {
+      queue = new LinkedQueue<>();
+      if (root != null) {
+        queue.enqueue(root);
+      }
+    }
+
+    @Override
+    public boolean hasNext() {
+      return !queue.isEmpty();
+    }
+    
+    @Override
+    public E next() {
+      if (queue.isEmpty()) {
+        throw new NoSuchElementException();
+      }
+      TernaryNode<E> current = queue.dequeue();
+
+      if (current.hasLeftChild()) {
+        queue.enqueue(current.getLeftChild());
+      }
+      if (current.hasMiddleChild()) {
+        queue.enqueue(current.getMiddleChild());
+      }
+      if (current.hasRightChild()) {
+        queue.enqueue(current.getRightChild());
+      }
+
+      return current.getData();
+    }
+
+    @Override 
+    public void remove() {
+      throw new NoSuchElementException();
+    }
+  }
+
   public static void main(String[] args) {
     TernaryTree<String> dTree = new TernaryTree<>("D");
 
@@ -440,7 +482,7 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
 
     TernaryTree<String> mTree = new TernaryTree<>("Hello!");
 
-    Iterator<String> mTreeIter = aTree.getPostorderIterator();
+    Iterator<String> mTreeIter = aTree.getLevelOrderIterator();
 
     while (mTreeIter.hasNext()) {
       System.out.println(mTreeIter.next());
