@@ -40,7 +40,7 @@ public class BinaryTree<E> implements BinaryTreeInterface<E> {
 
     private void privateSetTree(E rootData, BinaryTree<E> leftTree,
                                 BinaryTree<E> rightTree) {
-        root = new BinaryNode<>(rootData);
+        BinaryNode<E> newRoot = new BinaryNode<>(rootData);
 
         if ((leftTree != null) && !leftTree.isEmpty()) {
             root.setLeftChild(leftTree.root);
@@ -53,6 +53,8 @@ public class BinaryTree<E> implements BinaryTreeInterface<E> {
                 root.setRightChild(rightTree.root.copy());
             }
         }
+
+        root = newRoot;
 
         if ((leftTree != null) && (leftTree != this)) {
             leftTree.clear();
