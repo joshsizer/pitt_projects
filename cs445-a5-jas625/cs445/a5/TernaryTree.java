@@ -5,16 +5,14 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An implementation of a ternary tree. A ternary tree is similar to a binary
- * tree, except that any root has up to three children, instead of two. In
- * essense, a ternary tree is either empty, or a tree in the form of a root with
- * three child trees, which can also be empty. 
+ * An implementation of a ternary tree. A ternary tree is similar to a binary tree, except that any
+ * root has up to three children, instead of two. In essense, a ternary tree is either empty, or a
+ * tree in the form of a root with three child trees, which can also be empty.
  *
- * A tree is built by specifying a root node's data, and providing up to three
- * sub trees, each of which are ternary trees. Any of the three can be null,
- * which indicates an empty child. There is no "add" method because there is no
- * obvious location to add a new element to the data structure. So, the user
- * must explicitly specify the structure. 
+ * A tree is built by specifying a root node's data, and providing up to three sub trees, each of
+ * which are ternary trees. Any of the three can be null, which indicates an empty child. There is
+ * no "add" method because there is no obvious location to add a new element to the data structure.
+ * So, the user must explicitly specify the structure.
  *
  *
  * @author Joshua Sizer
@@ -45,8 +43,7 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
   }
 
   /**
-   * Creates a ternary tree with a root node with E data, and three children of
-   * ternary trees.
+   * Creates a ternary tree with a root node with E data, and three children of ternary trees.
    *
    * @param data       The data for the root node
    * @param leftTree   The left tree to add
@@ -69,8 +66,8 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
   }
 
   /**
-   * Sets this tree to a new a ternary tree with a root node with E data, and
-   * three children of ternary trees.
+   * Sets this tree to a new a ternary tree with a root node with E data, and three children of
+   * ternary trees.
    *
    * @param rootData   The data for the root node
    * @param leftTree   The left tree to add
@@ -85,24 +82,23 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
   }
 
   /**
-   * Private method that deals with the nitty-gritty of setting this tree's
-   * children with new trees. It handles the case where two or three trees input
-   * are the same trees, as well as the case where any of the three input trees are the same object as this.
+   * Private method that deals with the nitty-gritty of setting this tree's children with new trees.
+   * It handles the case where two or three trees input are the same trees, as well as the case
+   * where any of the three input trees are the same object as this.
    *
    *
-   * @param data The data for the tree's root
-   * @param leftTree The left child
+   * @param data       The data for the tree's root
+   * @param leftTree   The left child
    * @param middleTree The middle child
-   * @param rightTree The right child
+   * @param rightTree  The right child
    */
   private void initTree(E data, TernaryTree<E> leftTree, TernaryTree<E> middleTree,
       TernaryTree<E> rightTree) {
     /**
-     * We have to create a new node here for the case where one of the input
-     * trees is this. If we simply set node = new TernaryNode..., and one of the
-     * input trees is this, then we lose all of the subchildren of one of the
-     * input trees! 
-     **/     
+     * We have to create a new node here for the case where one of the input trees is this. If we
+     * simply set node = new TernaryNode..., and one of the input trees is this, then we lose all of
+     * the subchildren of one of the input trees!
+     **/
     TernaryNode<E> newRoot = new TernaryNode<>(data);
 
     // if it's empty, then why add it?
@@ -135,8 +131,8 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
     root = newRoot;
 
     /**
-     * For the next three if-statements, we only clear the tree if the input
-     * tree is not the same as this, otherwise we'd be clearing this!
+     * For the next three if-statements, we only clear the tree if the input tree is not the same as
+     * this, otherwise we'd be clearing this!
      */
     if (leftTree != null && leftTree != this) {
       leftTree.clear();
@@ -166,8 +162,8 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
   }
 
   /**
-   * Returns the height of the tree. The height of the tree is the maximum
-   * distance from any leaf to the root.
+   * Returns the height of the tree. The height of the tree is the maximum distance from any leaf to
+   * the root.
    *
    * @return int the height of the tree
    */
@@ -217,8 +213,7 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
   }
 
   /**
-   * Returns a preoder iterator. 
-   * Root, left, middle, right
+   * Returns a preoder iterator. Root, left, middle, right
    */
   @Override
   public Iterator<E> getPreorderIterator() {
@@ -230,16 +225,15 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
    */
   @Override
   public Iterator<E> getPostorderIterator() {
-    return null;
+    return new PostorderIterator();
   }
 
   /**
-   * Returns an inorder iterator
-   * Left, Root, middle, right
+   * Returns an inorder iterator Left, Root, middle, right
    */
   @Override
   public Iterator<E> getInorderIterator() {
-    return null;
+    return new InorderIterator();
   }
 
   /**
@@ -252,67 +246,163 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
 
   private class PreorderIterator implements Iterator<E> {
     LinkedStack<TernaryNode<E>> stack;
-    TernaryNode<E> next;
-    TernaryNode<E> current;
 
     private PreorderIterator() {
       stack = new LinkedStack<>();
-      next = root;
-      current = null;
+      if (root != null) {
+        stack.push(root);
+      }
     }
 
     @Override
     public boolean hasNext() {
-      return next != null;
+      return !stack.isEmpty();
     }
 
     @Override
     public E next() {
-      current = next;
+      TernaryNode<E> next;
 
-      if (current == null) {
+      if (hasNext()) {
+        next = stack.pop();
+
+        TernaryNode<E> leftChild = next.getLeftChild();
+        TernaryNode<E> middleChild = next.getMiddleChild();
+        TernaryNode<E> rightChild = next.getRightChild();
+
+        if (rightChild != null) {
+          stack.push(rightChild);
+        }
+
+        if (middleChild != null) {
+          stack.push(middleChild);
+        }
+
+        if (leftChild != null) {
+          stack.push(leftChild);
+        }
+      } else {
         throw new NoSuchElementException();
       }
 
-      if (current.hasLeftChild()) {
-        next = current.getLeftChild();
+
+      return next.getData();
+    }
+
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  private class PostorderIterator implements Iterator<E> {
+    LinkedStack<TernaryNode<E>> stack;
+    TernaryNode<E> current;
+
+    private PostorderIterator() {
+      stack = new LinkedStack<>();
+      current = root;
+    }
+    
+    @Override
+    public boolean hasNext() {
+      return !stack.isEmpty() || current != null;
+    }
+
+    @Override
+    public E next() {
+      TernaryNode<E> nextNode, leftChild, middleChild, rightChild = null;
+
+      while (current != null) {
         stack.push(current);
-      } else if (current.hasMiddleChild()) {
-        next = current.getMiddleChild();
-        stack.push(current);
-      } else if (current.hasRightChild()) {
-        next = current.getRightChild();
-        stack.push(current);
-      } else {
-        boolean foundNext = false;
-        TernaryNode<E> compare = current;
-        TernaryNode<E> parent;
-        while (!stack.isEmpty() && !foundNext) {
-          parent = stack.peek();
-          if (compare == parent.getLeftChild()) {
-            if (parent.hasMiddleChild()) {
-              next = parent.getMiddleChild();
-              foundNext = true;
-            } else if (parent.hasRightChild()) {
-              next = parent.getRightChild();
-              foundNext = true;
-            }
-          } else if (compare == parent.getMiddleChild()) {
-            if (parent.hasRightChild()) {
-              next = parent.getRightChild();
-              foundNext = true;
-            }
-          }  
-          if (!foundNext) {
-              compare = stack.pop();
-          }
-        }
-        if (stack.isEmpty()) {
-            next = null;
+
+        leftChild = current.getLeftChild();
+        middleChild = current.getMiddleChild();
+        rightChild = current.getRightChild();
+        if (leftChild == null && middleChild != null) {
+          current = middleChild;
+        } else if (leftChild == null && rightChild != null) {
+          current = rightChild;
+        } else {
+          current = leftChild;
         }
       }
 
-      return current.getData();
+      if (!stack.isEmpty()) {
+        nextNode = stack.pop();
+
+        TernaryNode<E> parent;
+        if (!stack.isEmpty()) {
+          parent = stack.peek();
+          if (nextNode == parent.getLeftChild()) {
+            current = parent.getMiddleChild();
+          } else if (nextNode == parent.getMiddleChild()) {
+            current = parent.getRightChild();
+          } else {
+            current = null;
+          }
+        } else {
+          current = null;
+        }
+      } else {
+        throw new NoSuchElementException();
+      }
+
+      return nextNode.getData();
+    }
+
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  private class InorderIterator implements Iterator<E> {
+    private LinkedStack<TernaryNode<E>> stack;
+    private TernaryNode<E> currentNode;
+    TernaryNode<E> nextNode;
+    boolean checkLeft;
+
+    private InorderIterator() {
+      stack = new LinkedStack<>();
+      nextNode = root;
+      checkLeft = true;
+    }
+
+    @Override
+    public boolean hasNext() {
+      return nextNode != null;
+    }
+
+    @Override
+    public E next() {
+      currentNode = nextNode;
+
+      while (checkLeft && currentNode.hasLeftChild()) {
+        stack.push(currentNode);
+        currentNode = currentNode.getLeftChild();
+      }
+
+      if (currentNode.hasRightChild() && currentNode.hasMiddleChild()) {
+        stack.push(currentNode.getRightChild());
+        nextNode = currentNode.getMiddleChild();
+        checkLeft = true;
+      } else if (currentNode.hasRightChild()) {
+        nextNode = currentNode.getRightChild();
+        checkLeft = true;
+      } else if (currentNode.hasMiddleChild()) {
+        nextNode = currentNode.getMiddleChild();
+        checkLeft = true;
+      } else {
+        if (!stack.isEmpty()) {
+          nextNode = stack.pop();
+        } else {
+          nextNode = null;
+        }
+        checkLeft = false;
+      }
+
+      return currentNode.getData();
     }
 
     @Override
@@ -333,7 +423,7 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
     TernaryTree<String> jTree = new TernaryTree<>("J");
     TernaryTree<String> kTree = new TernaryTree<>("K");
     TernaryTree<String> eTree = new TernaryTree<>("E", iTree, jTree, kTree);
-    TernaryTree<String> bTree = new TernaryTree<>("B", cTree, eTree, null);
+    TernaryTree<String> bTree = new TernaryTree<>("B", null, eTree, null);
 
     TernaryTree<String> aTree = new TernaryTree<>("A", bTree, cTree, dTree);
 
@@ -341,15 +431,16 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
     System.out.println("My Tree's number of nodes: " + aTree.getNumberOfNodes());
     System.out.println("My Tree's height: " + aTree.getHeight());
 
+    /*
     Iterator<String> preOrder = aTree.getPreorderIterator();
 
     while (preOrder.hasNext()) {
       System.out.println(preOrder.next());
-    }
+    } */
 
     TernaryTree<String> mTree = new TernaryTree<>("Hello!");
 
-    Iterator<String> mTreeIter = mTree.getPreorderIterator();
+    Iterator<String> mTreeIter = aTree.getPostorderIterator();
 
     while (mTreeIter.hasNext()) {
       System.out.println(mTreeIter.next());

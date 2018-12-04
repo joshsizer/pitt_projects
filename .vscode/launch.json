@@ -1,0 +1,37 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug (Launch)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/cs445-a5-jas625",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "",
+      "args": ""
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-TernaryTree",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/cs445-a5-jas625/",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "cs445.a5.TernaryTree",
+      "classPaths": ["cs445.a5.*", "cs445.StackAndQueuePackage.*"],
+      "sourcePaths": ["cs445/"],
+      "args": ""
+    },
+    {
+      "type": "java",
+      "name": "Debug (Attach)",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": "<debug port of remote debuggee>"
+    }
+  ]
+}
