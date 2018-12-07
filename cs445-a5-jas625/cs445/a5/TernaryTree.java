@@ -529,7 +529,7 @@ public class TernaryTree<E> implements TernaryTreeInterface<E>, TreeIteratorInte
 
     @Override
     public void remove() {
-      throw new NoSuchElementException();
+      throw new UnsupportedOperationException();
     }
   }
 
